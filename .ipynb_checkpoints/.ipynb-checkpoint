@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 1,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -17,7 +17,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [
     {
@@ -47,7 +47,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [
     {
@@ -71,7 +71,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 58,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [
     {
@@ -87,37 +87,22 @@
       " [0.]\n",
       " [0.]\n",
       " [0.]\n",
-      " [0.]]\n",
-      "[[2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]\n",
-      " [2]]\n"
+      " [0.]]\n"
      ]
     }
    ],
    "source": [
-    "subsample=[]\n",
     "c = np.zeros((10,1))\n",
-    "print(c)\n",
     "d = np.full((10,1),2)\n",
-    "print(d)\n",
-    "#stride\n",
-    "for x in \n",
-    "#if d.any()>c.any(): # I'm trying to divid the resistances in half every time and its not working...\n",
+    "if d.any()>c.any(): # I'm trying to divid the resistances in half every time and its not working...\n",
     "    #np.divide(b,d)\n",
-    "#    b=c\n",
-    "#    print(c)"
+    "    b=c\n",
+    "    print(c)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 50,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -143,62 +128,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 99,
+   "execution_count": null,
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "[1 2 1 ... 1 3 1]\n",
-      "[[1 2 1 0]\n",
-      " [2 1 1 2]\n",
-      " [2 0 1 2]\n",
-      " ...\n",
-      " [3 1 1 0]\n",
-      " [2 0 2 3]\n",
-      " [1 1 3 1]]\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    " # this code is supposed to covert the list to a 1D array\n",
-    "#for i in (base_coded):\n",
-    "   # print(int(i)) \n",
-    "#subsample=np.empty(3,2)\n",
-    "\n",
-    "reads=[]\n",
-    "for x in range(1):#len(base_coded)):\n",
-    "    l=list(int (i) for i in base_coded[x])\n",
-    "    d=np.asarray(l)\n",
-    "    print(d)\n",
-    "\n",
-    "    d.resize(2078,4)\n",
-    "    print(d)\n",
-    "    reads.append(l)\n",
-    "    \n",
-    "    #c=len(l)\n",
-    "    #a=np.hsplit(l,4)\n",
-    "    #a.astype(int)#\n",
-    "    #print(l)\n",
-    "    #print(l.shape())\n",
-    "    #l.reshape(,4,1)   \n",
-    "\n",
-    "#while c > 4:\n",
-    "#        fourmer=l[0:c]\n",
-    "#        c=c // 2\n",
-    "        \n",
-    "        \n",
-    "#print(l)\n",
-    "#print(l)\n",
-    "#len(reads[0:10])\n",
-    "#print(reads[1])\n",
+    "base_array=(np.array(base_coded)) # this code is supposed to covert the list to a 1D array\n",
     "#print(base_array[0:])\n",
-    "#print(reads.shape)\n",
+    "print(base_array.shape)\n",
     "#for x,y in enumerate(base_array):\n",
-    "#print(base_array[1].size)\n",
+    "#    print(np.array(base_array[x]).size)\n",
     "#    print(base_array[x].shape)\n",
-    "#print(base_array[x].dtype)\n",
+    "#    print(base_array[x].dtype)\n",
     "  #  print(base_array[x])"
    ]
   },
@@ -217,7 +157,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "base_transpose = np.transpose(base_array) # you cant transpose a 1d arry into a 1d array but I was trying to append it to have the resistances>\n",
+    "base_transpose = np.transpose(base_array) # you cant transpose a 1d arry into a 1d array but I was trying to append it to have the resistances???\n",
     "base_transpose.T\n",
     "base_transpose.shape\n",
     "#for x in range(10):\n",
@@ -239,24 +179,14 @@
    "execution_count": null,
    "metadata": {},
    "outputs": [],
-   "source": [
-    "#for x,y in enumerate(base):\n",
-    "    #print(np.array(data[x]).shape)\n",
-    "#    print(np.array(data[x]).size, data[x].ndim, data[x].dtype)# gets the  number of resistances from each signal"
-   ]
+   "source": []
   },
   {
    "cell_type": "code",
    "execution_count": null,
    "metadata": {},
    "outputs": [],
-   "source": [
-    "for x in range(10):\n",
-    "    print (x)\n",
-    "    a= \"signal_\"(x)\".txt\"\n",
-    "    print(a)\n",
-    "    #np.loadtxt(\"signal/signal_(x).txt\") #load the signal level data into the module"
-   ]
+   "source": []
   },
   {
    "cell_type": "code",
