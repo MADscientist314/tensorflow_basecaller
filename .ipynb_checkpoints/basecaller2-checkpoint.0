@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 1,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -12,30 +12,57 @@
     "import signal\n",
     "import fast5\n",
     "import fastq\n",
-    "import re"
+    "import re\n",
+    "import matplotlib"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def BaseFunction(x): #this function divides the length of whatever size the list is by 4 for a 4mer\n",
+    "  return(len(x)//4)"
    ]
   },
   {
    "cell_type": "code",
    "execution_count": 3,
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "[419.91370032 419.91370032 419.91370032 ... 433.38594925 433.38594925\n",
-      " 433.38594925]\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    "sig = []\n",
-    "for x in range(10):\n",
-    "    a = np.loadtxt(\"signal/signal_{}.txt\".format(x))\n",
-    "    sig.append(a)\n",
-    "\n",
-    "print(sig[0])"
+    "def SigFunction(x): #this function divides the length of whatever size the list is by 4 for a 4mer\n",
+    "  return(len(x)//40)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def array_inspect(x): # this function provides information about the array\n",
+    "    print (\"Shape is\",(x.shape))\n",
+    "    print((\"Length is\",len(x)))\n",
+    "    print((\"Dimension is\",x.ndim))\n",
+    "    print((\"Total Size is\",x.size))\n",
+    "    print((\"Type is\",x.dtype))\n",
+    "    print((\"Type Name is\",x.dtype.name))\n",
+    "    #print((\"Mean is\",(x).mean))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def normalize(x,y):\n",
+    "    # normalize resistance by dividing by the mean(or std?)\n",
+    "    z=np.divide(x,y)\n",
+    "    #np.savetxt(\"NormalizedSigArray_{}.csv\".format(),(z), delimiter=\",\")\n",
+    "    return z"
    ]
   },
   {
@@ -47,17 +74,112 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "[[55928], [54603], [10170], [31658], [2827], [53456], [11781], [25008], [9430], [56072]]\n"
+      "Shape is (55928,)\n",
+      "('Length is', 55928)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 55928)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (54603,)\n",
+      "('Length is', 54603)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 54603)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (10170,)\n",
+      "('Length is', 10170)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 10170)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (31658,)\n",
+      "('Length is', 31658)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 31658)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (2827,)\n",
+      "('Length is', 2827)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 2827)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (53456,)\n",
+      "('Length is', 53456)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 53456)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (11781,)\n",
+      "('Length is', 11781)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 11781)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (25008,)\n",
+      "('Length is', 25008)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 25008)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (9430,)\n",
+      "('Length is', 9430)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 9430)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n",
+      "Shape is (56072,)\n",
+      "('Length is', 56072)\n",
+      "('Dimension is', 1)\n",
+      "('Total Size is', 56072)\n",
+      "('Type is', dtype('float64'))\n",
+      "('Type Name is', 'float64')\n"
      ]
     }
    ],
+   "source": [
+    "# Import the signal level data\n",
+    "# Normalize it to the mean fof the signal\n",
+    "# Reshape it into a 2D array with a column length of 40 (10 signals per base)\n",
+    "means = [] \n",
+    "std = []\n",
+    "sig = []\n",
+    "for x in range(10):\n",
+    "    a=np.loadtxt(\"signal/signal_{}.txt\".format(x)) # load the signal\n",
+    "    m=a.mean() #obtain the average signal from the read\n",
+    "    b=normalize(m,a) # divide each resistance by the average to normalize \n",
+    "    sig.append(b)\n",
+    "    array_inspect(b)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(signal_1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
    "source": [
     "a = []\n",
     "for x,y in enumerate(sig):\n",
@@ -71,7 +193,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 5,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -90,7 +212,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -108,18 +230,9 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 29,
+   "execution_count": null,
    "metadata": {},
-   "outputs": [
-    {
-     "ename": "SyntaxError",
-     "evalue": "invalid syntax (<ipython-input-29-9607a366aa53>, line 7)",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[1;36m  File \u001b[1;32m\"<ipython-input-29-9607a366aa53>\"\u001b[1;36m, line \u001b[1;32m7\u001b[0m\n\u001b[1;33m    a=(len(l)/4))\u001b[0m\n\u001b[1;37m                ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m invalid syntax\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "reads=[]\n",
     "for x in range(1):#len(base_coded)):\n",
@@ -134,47 +247,16 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 104,
+   "execution_count": null,
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Shape is (2078, 4)\n",
-      "('Length is', 2078)\n",
-      "('Dimension is', 2)\n",
-      "('Total Size is', 8312)\n",
-      "('Type is', dtype('int32'))\n",
-      "('Type Name is', 'int32')\n",
-      "[[2 0 0 1]\n",
-      " [1 3 3 1]\n",
-      " [1 1 1 0]\n",
-      " ...\n",
-      " [1 1 1 3]\n",
-      " [2 0 2 0]\n",
-      " [1 1 1 0]]\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    "# this code is supposed to covert the list to a 1D array\n",
-    "def my_function(x): #this function divides the length of whatever size the list is by 4 for a 4mer\n",
-    "  return(len(x)//4)\n",
-    "def array_inspect(x): # this function provides information about the array\n",
-    "    print (\"Shape is\",(x.shape))\n",
-    "    print((\"Length is\",len(x)))\n",
-    "    print((\"Dimension is\",x.ndim))\n",
-    "    print((\"Total Size is\",x.size))\n",
-    "    print((\"Type is\",x.dtype))\n",
-    "    print((\"Type Name is\",x.dtype.name))\n",
-    "\n",
     "reads=[]\n",
     "for x in range(0):#len(base_coded)):\n",
     "    l=list(int (i) for i in base_coded[x])\n",
     "    d=np.asarray(l)\n",
-    "    d.resize(my_function(l),4)\n",
-    "    my_function(l)\n",
+    "    d.resize(BaseFunction(l),4)\n",
+    "    BaseFunction(l)\n",
     "    reads.append(d)\n",
     "#reads=np.array(2078,4,1)\n",
     "array_inspect(d)\n",
@@ -183,7 +265,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [

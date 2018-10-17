@@ -373,7 +373,7 @@
    "outputs": [],
    "source": [
     "\"\"\"\n",
-    "the purpose of this cell is to convert the reads in teh array to be 4mers *I think*\n",
+    "the purpose of this cell is to \n",
     "\"\"\"\n",
     "#d.resize((len(l)),4)\n",
     "    #print(d)"
