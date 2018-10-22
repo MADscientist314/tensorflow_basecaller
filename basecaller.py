@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[15]:
 
 
 import numpy as np
+from numpy.random import rand
 import csv
 import h5py
 import signal
 import fast5
 import fastq
 import re
-import matplotlib
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+#options(no_) I'm trying to eliminate scientific notation
 
 
-# In[2]:
+# In[16]:
 
 
 """
@@ -25,7 +29,7 @@ def BaseFunction(x,y):
     return((len(x)//y),y)
 
 
-# In[3]:
+# In[17]:
 
 
 """
@@ -36,7 +40,7 @@ def SigFunction(x,y):
     return((y),((x//y)))
 
 
-# In[4]:
+# In[18]:
 
 
 """
@@ -52,7 +56,7 @@ def array_inspect(x):
     #print(("Mean is",(x).mean))
 
 
-# In[5]:
+# In[19]:
 
 
 """
@@ -65,7 +69,7 @@ def normalize(x,y):
     return z
 
 
-# In[6]:
+# In[20]:
 
 
 def divider(x,y):
@@ -73,23 +77,15 @@ def divider(x,y):
     return a
 
 
-# In[7]:
+# In[21]:
 
 
-#subsample=[]
-#c = np.zeros((10,1))
-#print(c)
-#d = np.full((10,1),2)
-#print(d)
-#stride
-#for x in 
-#if d.any()>c.any(): # I'm trying to divid the resistances in half every time and its not working...
-    #np.divide(b,d)
-#    b=c
-#    print(c)
+def fxnAxes(x):
+    a=fig.add_axes([0.(x), 0.(x), 0.(x+1), 0.(x+1)])    
+    return a
 
 
-# In[8]:
+# In[22]:
 
 
 """
@@ -105,34 +101,83 @@ b = (a.split(">", 11))
 base = [re.sub(">|\n|\d", "",str) for str in b]
 baseA0 = [re.sub("A","0",str) for str in base]
 baseT1 = [re.sub("T","1",str) for str in baseA0]
-baseG2 = [re.sub("G","2",str) for str in baseT1]
-base_coded = [re.sub("C","3",str) for str in baseG2]
+baseG2 = [re.sub("C","2",str) for str in baseT1]
+base_coded = [re.sub("G","3",str) for str in baseG2] 
+A0=(a.count("A")) 
+T1=(a.count("T"))
+G2=(a.count("G"))
+C3=(a.count("C"))
 #print(base_coded)
+names = ['A', 'T', 'G', 'C']
+values = [(A0), (T1), (G2), (C3)]
+
+plt.subplot()
+plt.bar(names, values)
+plt.suptitle('Nucleotides in all reads')
+plt.show()
 
 
-# In[9]:
+# In[23]:
 
 
 """
 The purpose of this code is the following
 1)Convert the coded reads to integer form 
 2)Create an array inside the array with each read as a row
+3)Create a 2D matric with the counts of all the possible scenarios 
+presented in each row and the reads in each column
+4)Create a 1D array with the readlengths
 """
+kmer=[]
+kmercount=[]
 reads=[]
+#readstring={}
 readslength=[]
-for x in range(10):#len(base_coded)):
+res=(len(base_coded))   
+for x in range(res):
     l=list(int (i) for i in base_coded[x])
+    for y in range(1):
+        i=(l.count(y), l.count(y+1), l.count(y+2), l.count(y+3))
+        kmercount.append(i)
+        n=np.transpose(kmercount) # creates a 2D matrix with the bases counts as rows(ATGC) and the reads by columns
+        kmer = n.view() #Create a view of the array with the same data
     d=np.asarray(l)
-    d.resize((BaseFunction(l,4))) #Enter the list and the desired kmer for the function
+    d.resize((BaseFunction(d,4))) #Enter the list and the desired kmer for the function
+    v=(str(d))
     reads.append(d) # store the reads in an array called reads
-    #array_inspect(reads[x])
-    c=len(reads[x])
-    #print(c)
-    readslength.append(c) #store the amt of kmer reads in readlength
-#array_inspect(reads[x])
+    c=len(d)
+    readslength.append(c) #store the amt of kmer reads in readlength=
 
 
-# In[10]:
+# In[24]:
+
+
+"""
+The purpose of this code is the following
+1) visualize the readlengths
+"""
+plt.ioff()
+for i in range(1):
+    plt.title("Readlengths")
+    plt.ylabel('number of bases')
+    plt.xlabel('read id')
+    plt.plot(kmer[i])
+    plt.xticks(np.arange(0, 10))
+    plt.show()
+
+
+# In[25]:
+
+
+"""
+In this cell I was trying to create an array of all 256 possible combinations in base3  form 0000,0001, etc...
+I am doing this so that I can use it as a template to count the scenarios from each read
+"""
+basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
+print(basket)  
+
+
+# In[26]:
 
 
 """
@@ -150,7 +195,7 @@ for x in range(10):
     b=normalize(m,a) # divide each resistance by the average to normalize 
     c=b.size #obtains the number of resistance signals per read
     #print("resist",c)
-    d=readslength[x] #obtains the (4)kmers count per read
+    d=readslength[x] #obtains the kmers count per read
     #print("kmer",d)
     e=SigFunction(c,d) #figures out the average amount of resistances per kmer
     #print("Signal",x,"2D array size={}".format(e))
@@ -161,21 +206,29 @@ for x in range(10):
     #np.savetxt('sig_array.csv', b, delimiter=',')
 
 
-# In[12]:
+# In[27]:
 
 
-"""The purpose of this cell is to merge the reads and the raw signals together"""
+"""The purpose of this cell is to merge the reads and the raw signals together
+I dont really remember why I was doing this, but I am now using it to export 
+the csv array into another file where I will launch tensorflow
+
+
+"""
+
 concat=[]
 for x in range(10):
     a=reads[x].ndim 
     b=sig[x].ndim
-    c=np.concatenate((reads[x],sig[x]),axis=1)
+    reads[(x)].astype(int) #TESTTTTT
+    #print(reads[x].dtype)
+    c=np.concatenate(((reads[x]),sig[x]),axis=1)
     #array_inspect(c)
     concat.append(c)
-    np.savetxt("concat_1.1.csv",c, delimiter=",")
+    np.savetxt("concat.csv",c, delimiter=",")
 
 
-# In[13]:
+# In[28]:
 
 
 """
@@ -183,13 +236,101 @@ Any cell under this cell is trash code or experimental
 """
 
 
-# In[14]:
+# In[58]:
+
+
+
+
+
+# In[59]:
+
+
+#print(reads[0])
+#print(sig[0])
+for x in range(10):
+    print("Training entries: {}, labels: {}".format(len(reads[x]), len(sig[x])))
+
+
+# In[67]:
+
+
+vocab_size = 256
+
+model = keras.Sequential()
+model.add(keras.layers.Embedding(vocab_size, 16))
+model.add(keras.layers.GlobalAveragePooling1D())
+model.add(keras.layers.Dense(16, activation=tf.nn.relu))
+model.add(keras.layers.Dense(1, activation=tf.nn.sigmoid))
+
+model.summary()
+
+
+# In[ ]:
+
+
+"""
+I'm thinking the read identifier needs to be converted from a 2D array 
+with a shape of (2078,4) to a 1D array with a shape of (2078,1) in which 
+all 4 reads (ie:[0 1 2 3]) are concatenated to a single [0123] 4mer.
+I am still trying to figure out how to do this, but I believe it involves 
+converting the array into a string, and then concatenating the string,
+then converting it back into an integer.
+"""
+
+
+# In[76]:
+
+
+
+x_val =(sig[0]) #I'm trying to convert my reads and sig to tensor here and its not working
+partial_x_train = (sig[0])
+y_val =(reads[0])
+partial_y_train =(reads[0])
+
+print(array_inspect(partial_x_train))
+print(array_inspect(partial_y_train))
+
+print(partial_y_train)
+
+
+# In[77]:
+
+
+model.compile(optimizer=tf.train.AdamOptimizer(),
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+
+# In[ ]:
+
+
+
+
+
+# In[78]:
+
+
+history = model.fit(partial_x_train,
+                    partial_y_train,
+                    epochs=40,
+                    batch_size=512,
+                    validation_data=(x_val, y_val),
+                    verbose=1)
+
+
+# In[350]:
 
 
 """
 IDEA: USE AMPLICON SEQUENCING DATA TO TRAIN THE MODEL BC IT HAS A KNOWN LENGTH IN BP 
 OMG USE THE PECON AMPLICON DATA BC IT IS ALL EXACTLY 3KB IN SIZE!!!!!!!!!
 """
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
