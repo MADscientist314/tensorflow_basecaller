@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[15]:
+# In[1]:
 
 
 import numpy as np
@@ -15,10 +15,25 @@ import re
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
-#options(no_) I'm trying to eliminate scientific notation
 
 
-# In[16]:
+# In[2]:
+
+
+"""
+checks to see if gpu is working
+"""
+# Creates a graph.
+a = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[2, 3], name='a')
+b = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[3, 2], name='b')
+c = tf.matmul(a, b)
+# Creates a session with log_device_placement set to True.
+sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+# Runs the op.
+print(sess.run(c)) 
+
+
+# In[3]:
 
 
 """
@@ -29,7 +44,7 @@ def BaseFunction(x,y):
     return((len(x)//y),y)
 
 
-# In[17]:
+# In[4]:
 
 
 """
@@ -40,7 +55,7 @@ def SigFunction(x,y):
     return((y),((x//y)))
 
 
-# In[18]:
+# In[5]:
 
 
 """
@@ -53,10 +68,9 @@ def array_inspect(x):
     print(("Total Size is",x.size))
     print(("Type is",x.dtype))
     print(("Type Name is",x.dtype.name))
-    #print(("Mean is",(x).mean))
 
 
-# In[19]:
+# In[6]:
 
 
 """
@@ -69,23 +83,19 @@ def normalize(x,y):
     return z
 
 
-# In[20]:
+# In[7]:
 
 
-def divider(x,y):
-    a=np.divide(x,y)
-    return a
 
 
-# In[21]:
+
+# In[ ]:
 
 
-def fxnAxes(x):
-    a=fig.add_axes([0.(x), 0.(x), 0.(x+1), 0.(x+1)])    
-    return a
 
 
-# In[22]:
+
+# In[43]:
 
 
 """
@@ -97,8 +107,7 @@ This cell does the following
 """
 f = open("fasta/sampled_read.fasta","r") #opens the file with the reads
 a = f.read()
-b = (a.split(">", 11))
-base = [re.sub(">|\n|\d", "",str) for str in b]
+base = [re.sub(">|\n|\d", "",str) for str in a]
 baseA0 = [re.sub("A","0",str) for str in base]
 baseT1 = [re.sub("T","1",str) for str in baseA0]
 baseG2 = [re.sub("C","2",str) for str in baseT1]
@@ -107,7 +116,6 @@ A0=(a.count("A"))
 T1=(a.count("T"))
 G2=(a.count("G"))
 C3=(a.count("C"))
-#print(base_coded)
 names = ['A', 'T', 'G', 'C']
 values = [(A0), (T1), (G2), (C3)]
 
@@ -117,7 +125,7 @@ plt.suptitle('Nucleotides in all reads')
 plt.show()
 
 
-# In[23]:
+# In[9]:
 
 
 """
@@ -131,7 +139,6 @@ presented in each row and the reads in each column
 kmer=[]
 kmercount=[]
 reads=[]
-#readstring={}
 readslength=[]
 res=(len(base_coded))   
 for x in range(res):
@@ -149,7 +156,7 @@ for x in range(res):
     readslength.append(c) #store the amt of kmer reads in readlength=
 
 
-# In[24]:
+# In[10]:
 
 
 """
@@ -162,22 +169,11 @@ for i in range(1):
     plt.ylabel('number of bases')
     plt.xlabel('read id')
     plt.plot(kmer[i])
-    plt.xticks(np.arange(0, 10))
+    plt.xticks(np.arange(0, 11))
     plt.show()
 
 
-# In[25]:
-
-
-"""
-In this cell I was trying to create an array of all 256 possible combinations in base3  form 0000,0001, etc...
-I am doing this so that I can use it as a template to count the scenarios from each read
-"""
-basket = {'apple', 'orange', 'apple', 'pear', 'orange', 'banana'}
-print(basket)  
-
-
-# In[26]:
+# In[44]:
 
 
 """
@@ -189,7 +185,7 @@ The cell does the following:
 means = [] 
 std = []
 sig = []
-for x in range(10):
+for x in range(11):
     a=np.loadtxt("signal/signal_{}.txt".format(x)) # load the signal
     m=a.mean() #obtain the average signal from the read
     b=normalize(m,a) # divide each resistance by the average to normalize 
@@ -200,137 +196,161 @@ for x in range(10):
     e=SigFunction(c,d) #figures out the average amount of resistances per kmer
     #print("Signal",x,"2D array size={}".format(e))
     b.resize(e) # Insert the (#bases,#sig) changes the signal level n signals wide
-    #we can change this number later to be a sliding window for maching learning
     sig.append(b)
-    #array_inspect(sig[x])
-    #np.savetxt('sig_array.csv', b, delimiter=',')
 
 
-# In[27]:
-
-
-"""The purpose of this cell is to merge the reads and the raw signals together
-I dont really remember why I was doing this, but I am now using it to export 
-the csv array into another file where I will launch tensorflow
+# In[46]:
 
 
 """
+The goal for this cell is to convert the reads to string
+index the unique outputs for the 4mers
+and create a new list of the indexed [1:256 or whatever]
+reads for the model
+"""
+arr2=[] # In this code I converted the reads to a concated string of a 4mer
+converted=[]
+converted2=[]
+for i, v in enumerate(reads[10]): #Read 0 is the training data
+    temp = ''
+    for w in v:
+        temp = temp + str(w)
+    arr2.append(temp)
+a=np.unique(arr2) # makes an array of every unique combo in the read for downstream indexing
+for x in arr2:
+    #print(x)
+    b=enumerate(a)
+    c=[(i) for i, j in b if a[i]==(x)]
+    converted.append(c)
+for i, v in enumerate(converted): #Read 0 is the training data
+    temp = ''
+    #print(v)
+    for w in v:
+        #print(w)
+        temp = temp + str(w)
+    converted2.append(temp)
+y_train=np.int16(converted2)
 
-concat=[]
-for x in range(10):
-    a=reads[x].ndim 
-    b=sig[x].ndim
-    reads[(x)].astype(int) #TESTTTTT
-    #print(reads[x].dtype)
-    c=np.concatenate(((reads[x]),sig[x]),axis=1)
-    #array_inspect(c)
-    concat.append(c)
-    np.savetxt("concat.csv",c, delimiter=",")
 
-
-# In[28]:
+# In[128]:
 
 
 """
-Any cell under this cell is trash code or experimental
+I just copied the same code for the testing set read(1)
 """
+arr2=[] # In this code I converted the reads to a concated string of a 4mer
+converted=[]
+converted2=[]
+for x in range(1):
+    for i, v in enumerate(reads[x]): #Read 0 is the training data
+        temp = ''
+        for w in v:
+            temp = temp + str(w)
+        arr2.append(temp)
+    a=np.unique(arr2)# makes an array of every unique combo in the read for downstream indexing
+    for x in arr2:
+        #print(x)
+        b=enumerate(a)
+        c=[(i) for i, j in b if a[i]==(x)]
+        converted.append(c)
+    for i, v in enumerate(converted): #Read 0 is the training data
+        temp = ''
+        for w in v:
+            temp = temp + str(w)
+        converted2.append(temp)
+    n=np.unique(converted2)
+    print((n.size))
+y_test=np.int16(converted2)
 
 
-# In[58]:
+# In[129]:
 
 
+x_train = sig[10]
+x_test = sig[1]
 
 
+# 
 
-# In[59]:
-
-
-#print(reads[0])
-#print(sig[0])
-for x in range(10):
-    print("Training entries: {}, labels: {}".format(len(reads[x]), len(sig[x])))
+# In[130]:
 
 
-# In[67]:
+model=tf.keras.models.Sequential()
+model.add(tf.keras.layers.Dense(256, activation=tf.nn.relu)) # uses 128 neurons and is a feed forward rectilinear relu
+model.add(tf.keras.layers.Dense(256, activation=tf.nn.relu)) # do the same thig for hidden layer 2
+model.add(tf.keras.layers.Dense(256, activation=tf.nn.softmax)) # output layer with number of classifications (256) use softmax for output distribution
 
 
-vocab_size = 256
-
-model = keras.Sequential()
-model.add(keras.layers.Embedding(vocab_size, 16))
-model.add(keras.layers.GlobalAveragePooling1D())
-model.add(keras.layers.Dense(16, activation=tf.nn.relu))
-model.add(keras.layers.Dense(1, activation=tf.nn.sigmoid))
-
-model.summary()
+# In[131]:
 
 
-# In[ ]:
-
-
-"""
-I'm thinking the read identifier needs to be converted from a 2D array 
-with a shape of (2078,4) to a 1D array with a shape of (2078,1) in which 
-all 4 reads (ie:[0 1 2 3]) are concatenated to a single [0123] 4mer.
-I am still trying to figure out how to do this, but I believe it involves 
-converting the array into a string, and then concatenating the string,
-then converting it back into an integer.
-"""
-
-
-# In[76]:
-
-
-
-x_val =(sig[0]) #I'm trying to convert my reads and sig to tensor here and its not working
-partial_x_train = (sig[0])
-y_val =(reads[0])
-partial_y_train =(reads[0])
-
-print(array_inspect(partial_x_train))
-print(array_inspect(partial_y_train))
-
-print(partial_y_train)
-
-
-# In[77]:
-
-
-model.compile(optimizer=tf.train.AdamOptimizer(),
-              loss='binary_crossentropy',
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
 
-# In[ ]:
+# In[97]:
 
 
+#model.fit(x_train, y_train, epochs=30)
+history = model.fit(x_train,y_train,
+                    epochs=400)#batch_size=11063,verbose=1)
 
 
-
-# In[78]:
-
-
-history = model.fit(partial_x_train,
-                    partial_y_train,
-                    epochs=40,
-                    batch_size=512,
-                    validation_data=(x_val, y_val),
-                    verbose=1)
+# In[132]:
 
 
-# In[350]:
+val_loss, val_acc = model.evaluate(x_test, y_test)
+print(val_loss)
+print(val_acc)
 
 
-"""
-IDEA: USE AMPLICON SEQUENCING DATA TO TRAIN THE MODEL BC IT HAS A KNOWN LENGTH IN BP 
-OMG USE THE PECON AMPLICON DATA BC IT IS ALL EXACTLY 3KB IN SIZE!!!!!!!!!
-"""
+# In[52]:
 
 
-# In[ ]:
+#model.save('tensorflow_basecaller.model')
+#new_model = tf.keras.models.load_model('tensorflow_basecaller.model')
 
 
+# In[133]:
 
+
+predictions = model.predict(x_test)
+
+
+# In[134]:
+
+
+history_dict = history.history
+history_dict.keys()
+
+acc = history.history['acc']
+loss = history.history['loss']
+epochs = range(1, len(acc) + 1)
+plt.plot(epochs, loss, 'bo', label='Training loss')
+plt.title('Validation loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+
+plt.show()
+
+
+# In[135]:
+
+
+plt.plot(epochs, acc, 'ro', label='Accuracy')
+plt.title('Accuracy loss')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+
+
+# In[136]:
+
+
+print(np.argpartition(kth=255,a=predictions[0])) #why is 85 the max number
 
 
 # In[ ]:
